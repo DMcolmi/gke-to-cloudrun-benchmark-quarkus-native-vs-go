@@ -1,0 +1,31 @@
+# Stage 1: Build native executable using GraalVM Community
+# --platform linux/amd64 forces AMD64 build on ARM (Mac M1/M2/M3)
+# so the binary matches the deployment target (Cloud Run / GKE on x86_64)
+FROM --platform=linux/amd64 ghcr.io/graalvm/native-image-community:21 AS build
+WORKDIR /app
+
+# Install Maven
+RUN microdnf install -y findutils tar gzip && \
+    curl -fsSL https://archive.apache.org/dist/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz | tar xz -C /opt && \
+    ln -s /opt/apache-maven-3.9.9/bin/mvn /usr/local/bin/mvn
+
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
+RUN mvn package -Pnative -DskipTests -B
+
+# Stage 2: Minimal runtime image (AMD64)
+# ubi9-minimal has GLIBC 2.34+ and microdnf to install missing system libs
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:latest
+WORKDIR /app
+
+RUN microdnf install -y zlib && microdnf clean all
+
+COPY --from=build /app/target/*-runner /app/application
+
+RUN chmod 775 /app/application
+
+EXPOSE 8080
+
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]

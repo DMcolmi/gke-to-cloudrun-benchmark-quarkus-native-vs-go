@@ -1,0 +1,107 @@
+# General
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon\r
+desktop.ini
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Environment / secrets
+.env
+.env.*
+.secret
+
+# Temporary
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# OS generated files
+.Spotlight-V100
+.Trashes
+
+# Editor directories and files
+.vscode/
+*.code-workspace
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# Java / Maven / Quarkus
+**/target/
+**/target/**
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+build-analytics-event.json
+build-metrics.json
+
+# Quarkus native-image and build output
+quarkus-app/
+quarkus/
+native/
+*-runner
+*-native-image*
+
+# Maven wrapper cache (leave wrapper scripts committed)
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Gradle (if ever used)
+.gradle/
+build/
+
+# Go
+# Binaries for programs and plugins
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go build/cache
+pkg/
+Godeps/
+vendor/
+
+# Docker
+# Ignore local docker files and images state
+docker-compose.override.yml
+**/Dockerfile.*.local
+
+# Kubernetes / generated manifests
+*.local.yaml
+
+# Coverage / test output
+coverage/
+*.coverprofile
+*.gcov
+
+# IDE / dependency caches
+.idea/
+*.iml
+.cache/
+.gradle/
+.history/
+
+# Misc
+*.bak
+*.orig
+*~
+
+# Keep reports that are intentionally checked in (like README or benchmark results)
+# If you want to ignore benchmark outputs, uncomment the following lines:
+# benchmarks/cold-start/*.csv
+# benchmarks/k6/*.html

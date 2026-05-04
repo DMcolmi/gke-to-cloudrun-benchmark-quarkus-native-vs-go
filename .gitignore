@@ -105,3 +105,6 @@ coverage/
 # If you want to ignore benchmark outputs, uncomment the following lines:
 # benchmarks/cold-start/*.csv
 # benchmarks/k6/*.html
+
+# Ignore built Go server binary
+3-cloudrun-golang/server

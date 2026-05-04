@@ -16,16 +16,15 @@ COPY src ./src
 RUN mvn package -Pnative -DskipTests -B
 
 # Stage 2: Minimal runtime image (AMD64)
-# ubi9-minimal has GLIBC 2.34+ and microdnf to install missing system libs
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:latest
+# ubi9-micro provides GLIBC 2.34+ (perfect match for GraalVM 21)
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-micro:latest
 WORKDIR /app
 
-RUN microdnf install -y zlib && microdnf clean all
-
-COPY --from=build /app/target/*-runner /app/application
-
-RUN chmod 775 /app/application
+# We need zlib for the native executable, we can copy it from the build stage
+COPY --from=build /usr/lib64/libz.so.1 /usr/lib64/libz.so.1
+COPY --chmod=775 --from=build /app/target/*-runner /app/application
 
 EXPOSE 8080
 
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+

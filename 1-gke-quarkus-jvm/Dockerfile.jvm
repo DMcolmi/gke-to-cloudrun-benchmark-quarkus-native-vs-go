@@ -17,6 +17,13 @@ COPY --from=build /app/target/quarkus-app/quarkus/ ./quarkus/
 
 EXPOSE 8080
 
-ENV JAVA_OPTS="-Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-
-CMD ["java", "-jar", "quarkus-run.jar"]
+# Tuning for 256Mi constraint:
+# - MaxRAMPercentage=75 → ~192MB heap (vs ~64MB with default ergonomics)
+# - UseSerialGC → eliminates GC thread overhead on single vCPU
+# - ActiveProcessorCount=1 → correct JVM threading for 1 vCPU Cloud Run
+CMD ["java", \
+     "-XX:MaxRAMPercentage=75.0", \
+     "-XX:+UseSerialGC", \
+     "-XX:ActiveProcessorCount=1", \
+     "-Djava.util.logging.manager=org.jboss.logmanager.LogManager", \
+     "-jar", "quarkus-run.jar"]

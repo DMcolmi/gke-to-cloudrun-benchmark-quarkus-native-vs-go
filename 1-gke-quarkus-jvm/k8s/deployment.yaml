@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: device-api-jvm
+  labels:
+    app: device-api-jvm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: device-api-jvm
+  template:
+    metadata:
+      labels:
+        app: device-api-jvm
+    spec:
+      containers:
+        - name: device-api-jvm
+          image: REGISTRY/device-api-jvm:latest  # Replace with your Artifact Registry path
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "1000m"
+            limits:
+              memory: "256Mi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /api/devices
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/devices
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30

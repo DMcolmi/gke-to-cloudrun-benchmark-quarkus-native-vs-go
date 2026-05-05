@@ -108,3 +108,6 @@ coverage/
 
 # Ignore built Go server binary
 3-cloudrun-golang/server
+
+# Documentation
+roadmap.md

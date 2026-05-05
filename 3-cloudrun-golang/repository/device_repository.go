@@ -21,6 +21,15 @@ func NewDeviceRepository() *DeviceRepository {
 func (r *DeviceRepository) Save(device model.Device) model.Device {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	
+	// Prevent OOM during heavy load testing
+	if len(r.store) > 1000 {
+		for k := range r.store {
+			delete(r.store, k)
+			break
+		}
+	}
+	
 	r.store[device.ID] = device
 	return device
 }

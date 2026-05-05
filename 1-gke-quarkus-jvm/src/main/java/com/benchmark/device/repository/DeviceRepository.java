@@ -14,6 +14,10 @@ public class DeviceRepository {
     private final ConcurrentHashMap<UUID, Device> store = new ConcurrentHashMap<>();
 
     public Device save(Device device) {
+        // Prevent OOM during heavy load testing
+        if (store.size() > 1000) {
+            store.remove(store.keys().nextElement());
+        }
         store.put(device.getId(), device);
         return device;
     }

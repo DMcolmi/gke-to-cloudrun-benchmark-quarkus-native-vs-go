@@ -11,9 +11,11 @@ import (
 	"github.com/benchmark/cloudrun-go/service"
 )
 
-func main() {
-	startTime := time.Now()
+// processStart is initialized at package load time, before main() is called.
+// This captures the Go runtime bootstrap time, analogous to JVM start time in Java.
+var processStart = time.Now()
 
+func main() {
 	// Wire dependencies
 	repo := repository.NewDeviceRepository()
 	svc := service.NewDeviceService(repo)
@@ -24,7 +26,7 @@ func main() {
 	ctrl.RegisterRoutes(mux)
 
 	// Startup logging
-	elapsed := time.Since(startTime)
+	elapsed := time.Since(processStart)
 	fmt.Printf("🚀 Application started in %d ms\n", elapsed.Milliseconds())
 
 	// Start server
@@ -33,3 +35,4 @@ func main() {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
+

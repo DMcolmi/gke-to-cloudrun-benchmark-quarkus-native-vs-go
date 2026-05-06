@@ -9,7 +9,7 @@ SERVICE_NAME="device-api-go"
 IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/benchmark-lab/${SERVICE_NAME}:latest"
 
 echo "==> Building Go image..."
-docker build -t "${IMAGE}" .
+docker build --platform linux/amd64 -t "${IMAGE}" .
 
 echo "==> Pushing to Artifact Registry..."
 docker push "${IMAGE}"
@@ -28,10 +28,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --timeout=60s \
   --concurrency=80 \
   --allow-unauthenticated \
-  --startup-probe-initial-delay=0 \
-  --startup-probe-period=2 \
-  --startup-probe-failure-threshold=30 \
-  --startup-probe-path=/api/devices
+  --startup-probe="initialDelaySeconds=0,periodSeconds=2,failureThreshold=30,httpGet.path=/api/devices"
 
 echo "==> Done! Service URL:"
 gcloud run services describe "${SERVICE_NAME}" \

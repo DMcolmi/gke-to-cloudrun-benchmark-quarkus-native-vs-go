@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: device-api-spring-jvm
+  labels:
+    app: device-api-spring-jvm
+spec:
+  type: LoadBalancer
+  selector:
+    app: device-api-spring-jvm
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

@@ -156,7 +156,7 @@ benchmark-all: ## Run k6 against all 3 runtimes in Docker with equal resources. 
 	@echo "  Waiting for JVM startup (15s)..."; sleep 15
 	BASE_URL=$(BENCH_URL) k6 run \
 		-e REPORT_FILE=benchmarks/k6/report-jvm.html \
-		benchmarks/k6/script.js \
+		benchmarks/k6/stress_test.js \
 		|| true
 	docker rm -f bench-svc
 
@@ -168,7 +168,7 @@ benchmark-all: ## Run k6 against all 3 runtimes in Docker with equal resources. 
 	@echo "  Waiting for Native startup (5s)..."; sleep 5
 	BASE_URL=$(BENCH_URL) k6 run \
 		-e REPORT_FILE=benchmarks/k6/report-native.html \
-		benchmarks/k6/script.js \
+		benchmarks/k6/stress_test.js \
 		|| true
 	docker rm -f bench-svc
 
@@ -179,7 +179,7 @@ benchmark-all: ## Run k6 against all 3 runtimes in Docker with equal resources. 
 	@echo "  Waiting for Go startup (3s)..."; sleep 3
 	BASE_URL=$(BENCH_URL) k6 run \
 		-e REPORT_FILE=benchmarks/k6/report-go.html \
-		benchmarks/k6/script.js \
+		benchmarks/k6/stress_test.js \
 		|| true
 	docker rm -f bench-svc
 

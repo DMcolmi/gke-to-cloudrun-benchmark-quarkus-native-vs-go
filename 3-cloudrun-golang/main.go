@@ -25,9 +25,9 @@ func main() {
 	mux := http.NewServeMux()
 	ctrl.RegisterRoutes(mux)
 
-	// Startup logging
+	// Startup logging — use microsecond resolution to avoid rounding to 0ms
 	elapsed := time.Since(processStart)
-	fmt.Printf("🚀 Application started in %d ms\n", elapsed.Milliseconds())
+	fmt.Printf("🚀 Application started in %.3f ms\n", float64(elapsed.Microseconds())/1000.0)
 
 	// Start server
 	log.Printf("Server listening on :8080")

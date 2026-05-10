@@ -27,8 +27,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --max-instances=1 \
   --timeout=60s \
   --concurrency=80 \
-  --allow-unauthenticated \
-  --startup-probe="initialDelaySeconds=0,periodSeconds=2,failureThreshold=30,httpGet.path=/api/devices"
+  --allow-unauthenticated
 
 echo "==> Done! Service URL:"
 gcloud run services describe "${SERVICE_NAME}" \

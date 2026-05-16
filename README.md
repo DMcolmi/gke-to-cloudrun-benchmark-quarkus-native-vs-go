@@ -53,7 +53,7 @@ Each phase implements the **same API** (Device Registry) so metrics are directly
 
 ```bash
 export PROJECT_ID="your-gcp-project"
-export REGION="europe-west1"
+export REGION="europe-west8"
 export AR_REPO="benchmark-lab"
 ```
 

@@ -44,7 +44,7 @@ export default function () {
   });
   errorRate.add(!ok);
 
-  // Added sleep to stabilize RPS at ~2000 (200 VU * 10 req/s)
+  // Added sleep to stabilize RPS at ~798 req/s
   // This allows meaningful latency measurement (p95) on a single vCPU.
   sleep(0.1);
 }

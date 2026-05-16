@@ -3,7 +3,7 @@
 # ============================================================================
 
 PROJECT_ID   ?= your-gcp-project
-REGION       ?= europe-west1
+REGION       ?= europe-west8
 AR_REPO      ?= benchmark-lab
 TAG          ?= latest
 
@@ -88,19 +88,19 @@ deploy-spring-gke: ## Deploy Spring Boot JVM to GKE
 
 .PHONY: deploy-quarkus-jvm-cloudrun
 deploy-quarkus-jvm-cloudrun: ## Deploy Quarkus JVM to Cloud Run
-	cd 1-gke-quarkus-jvm && deploy-cloudrun-jvm.sh
+	cd 1-gke-quarkus-jvm && ./deploy-cloudrun-jvm.sh
 
 .PHONY: deploy-spring-cloudrun
 deploy-spring-cloudrun: ## Deploy Spring Boot JVM to Cloud Run
-	cd 1b-gke-spring-jvm && ./deploy-cloudrun-spring-jvm.sh
+	cd ../1b-gke-spring-jvm && ./deploy-cloudrun-spring-jvm.sh
 
 .PHONY: deploy-native
 deploy-native: ## Deploy Quarkus Native to Cloud Run
-	cd 2-cloudrun-quarkus-native && ./deploy-cloudrun.sh
+	cd ../2-cloudrun-quarkus-native && ./deploy-cloudrun.sh
 
 .PHONY: deploy-go
 deploy-go: ## Deploy Go to Cloud Run
-	cd 3-cloudrun-golang && ./deploy-cloudrun.sh
+	cd ../3-cloudrun-golang && ./deploy-cloudrun.sh
 
 .PHONY: deploy-all
 deploy-all: deploy-gke deploy-spring-gke deploy-native deploy-go deploy-quarkus-jvm-cloudrun ## Deploy all services
@@ -121,9 +121,18 @@ BENCH_URL    := http://localhost:$(BENCH_PORT)
 # Benchmark targets
 # ----------------------------------------------------------------------------
 .PHONY: benchmark-load
-benchmark-load: ## Run k6 stress test (requires BASE_URL env var)
-	@if [ -z "$(BASE_URL)" ]; then echo "ERROR: Set BASE_URL=https://your-service.run.app"; exit 1; fi
-	k6 run -e BASE_URL=$(BASE_URL) benchmarks/k6/stress_test.js
+benchmark-load: ## Run k6 stress test (requires BASE_URL or SERVICE)
+	@if [ -n "$(SERVICE)" ]; then \
+		URL=$$(gcloud run services describe $(SERVICE) --region=$(REGION) --project=$(PROJECT_ID) --format="value(status.url)" 2>/dev/null); \
+		if [ -z "$$URL" ]; then echo "ERROR: Service $(SERVICE) not found in $(REGION)"; exit 1; fi; \
+		echo "Resolved $(SERVICE) -> $$URL"; \
+		k6 run -e BASE_URL=$$URL -e REPORT_FILE=benchmarks/k6/stress_report.html benchmarks/k6/stress_test.js; \
+	elif [ -n "$(BASE_URL)" ]; then \
+		k6 run -e BASE_URL=$(BASE_URL) -e REPORT_FILE=benchmarks/k6/stress_report.html benchmarks/k6/stress_test.js; \
+	else \
+		echo "ERROR: Set BASE_URL=... or SERVICE=..."; \
+		exit 1; \
+	fi
 
 .PHONY: k6-report
 k6-report: ## Run k6 stress test and produce HTML report at benchmarks/k6/stress_report.html

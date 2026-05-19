@@ -3,8 +3,6 @@
 > **A performance and cost-optimization lab** comparing four Java/Go runtimes on Cloud Run (scale-to-zero).  
 > Cold starts, CPU efficiency, memory footprint, and cost — measured with real Cloud Monitoring data.
 
-Full write-up: [link to article]
-
 ---
 
 ## The Story
